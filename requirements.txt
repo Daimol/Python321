@@ -1,1 +1,2 @@
-Zmena
+customtkinter
+fpdf
