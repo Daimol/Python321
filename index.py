@@ -5,8 +5,49 @@ import requests
 from fpdf import FPDF
 import os
 from datetime import datetime
+import json
 
-# CENOVÉ FUNKCE
+# Načtení JSON databáze značek a modelů
+def load_devices():
+    with open("devices.json", "r", encoding="utf-8") as f:
+        return json.load(f)
+
+devices_data = load_devices()
+
+# Callback při výběru značky
+def on_brand_selected(choice):
+    models = devices_data.get(choice, [])
+    model_combobox.configure(values=models)
+    if models:
+        model_combobox.set(models[0])
+    else:
+        model_combobox.set("")
+
+# FPDF - GENERÁTOR PDF
+def generate_pdf(customer_name, phone, phone_model, part_name, labor_price, imei, email):
+    pdf = FPDF()
+    pdf.add_page()
+
+    pdf.add_font("DejaVu", "", "fonts/DejaVuSans.ttf", uni=True)
+    pdf.set_font("DejaVu", size=12)
+    pdf.image("logo/logo.png", x=10, y=8, w=33)
+
+    pdf.cell(200, 10, txt=f"Zákazkový list - {customer_name}", ln=True, align='C')
+    pdf.cell(200, 10, txt=f"Telefon: {phone}", ln=True)
+    pdf.cell(200, 10, txt=f"Model telefonu: {phone_model}", ln=True)
+    pdf.cell(200, 10, txt=f"IMEI: {imei}", ln=True)
+    pdf.cell(200, 10, txt=f"E-mail: {email}", ln=True)
+    pdf.cell(200, 10, txt=f"Název dílu: {part_name}", ln=True)
+    pdf.cell(200, 10, txt=f"Cena práce: {labor_price} Kč", ln=True)
+    pdf.cell(200, 10, txt=f"Celková cena: {labor_price} Kč", ln=True)
+    pdf.cell(200, 10, txt=f"Datum: {datetime.now().strftime('%d.%m.%Y %H:%M')}", ln=True)
+
+    os.makedirs("zakazky", exist_ok=True)
+    filename = f"zakazky/{customer_name}_{phone_model}_{datetime.now().strftime('%Y%m%d%H%M%S')}.pdf"
+    pdf.output(filename)
+    return filename
+
+# SCRAPING - CENA DÍLU
 def get_price(product_code):
     url = f"https://www.servisnidily.cz/{product_code}"
     response = requests.get(url)
@@ -26,113 +67,113 @@ def parse_price(price_str):
     except ValueError:
         return 0.0
 
-# Funkce pro generování PDF s podporou Unicode
-def generate_pdf(customer_name, phone_model, product_code, product_price, labor_price, imei, email, consent):
-    pdf = FPDF()
-    pdf.add_page()
-
-    # Nastavení fontu s podporou UTF-8 (font musí být v "fonts/DejaVuSans.ttf" nebo jiném souboru)
-    pdf.add_font("DejaVu", "", "fonts/DejaVuSans.ttf", uni=True)
-    pdf.set_font("DejaVu", size=12)
-
-    # Přidání loga
-    pdf.image("logo/logo.png", x=10, y=8, w=33)
-
-    # Přidání textu (česky)
-    pdf.cell(200, 10, txt=f"Zákazkový list - {customer_name}", ln=True, align='C')
-    pdf.cell(200, 10, txt=f"Model telefonu: {phone_model}", ln=True)
-    pdf.cell(200, 10, txt=f"IMEI: {imei}", ln=True)
-    pdf.cell(200, 10, txt=f"E-mail: {email}", ln=True)
-    pdf.cell(200, 10, txt=f"Kód produktu: {product_code}", ln=True)
-    pdf.cell(200, 10, txt=f"Cena dílu: {product_price} Kč", ln=True)
-    pdf.cell(200, 10, txt=f"Cena práce: {labor_price} Kč", ln=True)
-    pdf.cell(200, 10, txt=f"Celková cena: {float(product_price) + labor_price} Kč", ln=True)
-    pdf.cell(200, 10, txt=f"Souhlas se servisem: {'Ano' if consent else 'Ne'}", ln=True)
-    pdf.cell(200, 10, txt=f"Datum: {datetime.now().strftime('%d.%m.%Y %H:%M')}", ln=True)
-
-    # Uložení PDF
-    os.makedirs("zakazky", exist_ok=True)
-    filename = f"zakazky/{customer_name}_{phone_model}_{datetime.now().strftime('%Y%m%d%H%M%S')}.pdf"
-    pdf.output(filename)
-    return filename
-
 # TKINTER GUI
-ctk.set_appearance_mode("dark")  # Nastavení tmavého režimu
-ctk.set_default_color_theme("blue")
+ctk.set_appearance_mode("dark")
+ctk.set_default_color_theme("dark-blue")
+
 root = ctk.CTk()
 root.title("Generátor zakázkového listu")
+root.geometry("1000x600")
+root.eval('tk::PlaceWindow . center')
 
-# Nastavení velikosti okna a umístění na střed
-root.geometry("1000x600")  # Velikost okna (šířka 1000px a výška 600px)
+# GRID
+root.grid_columnconfigure(0, weight=1)
+root.grid_columnconfigure(1, weight=1)
 
-# Centrování okna
-window_width = 1000
-window_height = 800
-screen_width = root.winfo_screenwidth()
-screen_height = root.winfo_screenheight()
+# FRAMES
+frame_left = ctk.CTkFrame(root)
+frame_left.grid(row=0, column=0, padx=20, pady=20, sticky="nsew")
 
-# Vypočítání pozice pro centrování okna
-x_position = (screen_width - window_width) // 2
-y_position = (screen_height - window_height) // 2
+frame_right = ctk.CTkFrame(root)
+frame_right.grid(row=0, column=1, padx=20, pady=20, sticky="nsew")
 
-# Nastavení okna na střed
-root.geometry(f"{window_width}x{window_height}+{x_position}+{y_position}")
+frame_bottom = ctk.CTkFrame(root)
+frame_bottom.grid(row=1, column=0, columnspan=2, padx=20, pady=20, sticky="ew")
 
-# VSTUPNÍ PRVKY
-label_customer_name = ctk.CTkLabel(root, text="Jméno zákazníka")
-entry_customer_name = ctk.CTkEntry(root)
+# LEVÝ SLOUPEC
+label_customer_name = ctk.CTkLabel(frame_left, text="Jméno zákazníka")
+entry_customer_name = ctk.CTkEntry(frame_left, width=230)
 
-label_phone_model = ctk.CTkLabel(root, text="Model telefonu")
-phone_model_combobox = ctk.CTkComboBox(root, values=["Apple iPhone 5S", "Samsung Galaxy S10", "Huawei P30", "Jiný"])
+label_phone = ctk.CTkLabel(frame_left, text="Telefonní číslo")
+entry_phone = ctk.CTkEntry(frame_left, width=230)
 
-label_imei = ctk.CTkLabel(root, text="IMEI")
-entry_imei = ctk.CTkEntry(root)
+label_imei = ctk.CTkLabel(frame_left, text="IMEI")
+entry_imei = ctk.CTkEntry(frame_left, width=230)
 
-label_email = ctk.CTkLabel(root, text="E-mail")
-entry_email = ctk.CTkEntry(root)
+label_email = ctk.CTkLabel(frame_left, text="E-mail")
+entry_email = ctk.CTkEntry(frame_left, width=230)
 
-label_product_code = ctk.CTkLabel(root, text="Kód produktu")
-entry_product_code = ctk.CTkEntry(root)
+# PRAVÝ SLOUPEC
+label_brand = ctk.CTkLabel(frame_right, text="Značka")
+brand_combobox = ctk.CTkComboBox(frame_right, values=list(devices_data.keys()), command=on_brand_selected, width=230)
+brand_combobox.set("Vyber značku")
 
-label_labor_price = ctk.CTkLabel(root, text="Cena práce (Kč)")
-entry_labor_price = ctk.CTkEntry(root)
+label_model = ctk.CTkLabel(frame_right, text="Model")
+model_combobox = ctk.CTkComboBox(frame_right, values=[], width=230)
+model_combobox.set("Vyber model")
+
+label_part_name = ctk.CTkLabel(frame_right, text="Název dílu")
+entry_part_name = ctk.CTkEntry(frame_right, width=230)
+
+label_part_price = ctk.CTkLabel(frame_right, text="Cena dílu (nezobrazuje se v PDF)")
+entry_part_price = ctk.CTkEntry(frame_right, width=230)
+
+# FUNKCE: automatické načtení ceny
+def update_price_from_code(event=None):
+    code = entry_part_name.get()
+    price = get_price(code)
+    if price:
+        entry_part_price.delete(0, tk.END)
+        entry_part_price.insert(0, str(price))
+
+entry_part_name.bind("<FocusOut>", update_price_from_code)
+
+# SPODNÍ ČÁST
+label_labor_price = ctk.CTkLabel(frame_bottom, text="Cena práce (Kč)")
+entry_labor_price = ctk.CTkEntry(frame_bottom, width=100)
 entry_labor_price.insert(0, "500")
 
-consent_var = tk.BooleanVar()
-checkbox_consent = ctk.CTkCheckBox(root, text="Zákazník souhlasí s opravou", variable=consent_var)
-
-# FUNKCE PO STISKNUTÍ TLAČÍTKA
 def calculate_price():
     customer_name = entry_customer_name.get()
-    phone_model = phone_model_combobox.get()
-    product_code = entry_product_code.get()
-    labor_price = float(entry_labor_price.get())
+    phone = entry_phone.get()
     imei = entry_imei.get()
     email = entry_email.get()
-    consent = consent_var.get()
+    brand = brand_combobox.get()
+    model = model_combobox.get()
+    part_name = entry_part_name.get()
+    labor_price = float(entry_labor_price.get())
 
-    product_price = get_price(product_code)
-    if not product_price:
-        messagebox.showerror("Chyba", "Produkt nebyl nalezen.")
+    if not customer_name or not phone:
+        messagebox.showerror("Chyba", "Vyplňte prosím jméno zákazníka a telefonní číslo.")
         return
 
-    filename = generate_pdf(customer_name, phone_model, product_code, product_price, labor_price, imei, email, consent)
+    phone_model = f"{brand} {model}"
+    filename = generate_pdf(customer_name, phone, phone_model, part_name, labor_price, imei, email)
     messagebox.showinfo("Hotovo", f"Soubor byl uložen:\n{filename}")
 
-# TLAČÍTKO
-button_generate = ctk.CTkButton(root, text="Vygenerovat zakázkový list", command=calculate_price)
+button_generate = ctk.CTkButton(frame_bottom, text="Vygenerovat zakázkový list", command=calculate_price)
 
-# ROZLOŽENÍ
-for widget in [
+# UMÍSTĚNÍ WIDGETŮ
+for i, widget in enumerate([
     label_customer_name, entry_customer_name,
-    label_phone_model, phone_model_combobox,
+    label_phone, entry_phone,
     label_imei, entry_imei,
-    label_email, entry_email,
-    label_product_code, entry_product_code,
-    label_labor_price, entry_labor_price,
-    checkbox_consent,
-    button_generate
-]:
-    widget.pack(padx=20, pady=10)
+    label_email, entry_email
+]):
+    widget.grid(row=i, column=0, pady=5, sticky="ew")
+
+for i, widget in enumerate([
+    label_brand, brand_combobox,
+    label_model, model_combobox,
+    label_part_name, entry_part_name,
+    label_part_price, entry_part_price
+]):
+    widget.grid(row=i, column=0, pady=5, sticky="ew")
+
+label_labor_price.grid(row=0, column=0, padx=10, pady=5, sticky="w")
+entry_labor_price.grid(row=0, column=1, padx=10, pady=5, sticky="ew")
+button_generate.grid(row=0, column=2, padx=10, pady=5)
+
+frame_bottom.grid_columnconfigure(1, weight=1)
 
 root.mainloop()
