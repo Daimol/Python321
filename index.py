@@ -57,10 +57,26 @@ def generate_pdf(customer_name, phone_model, product_code, product_price, labor_
     return filename
 
 # TKINTER GUI
-ctk.set_appearance_mode("light")
+ctk.set_appearance_mode("dark")  # Nastavení tmavého režimu
 ctk.set_default_color_theme("blue")
 root = ctk.CTk()
 root.title("Generátor zakázkového listu")
+
+# Nastavení velikosti okna a umístění na střed
+root.geometry("1000x600")  # Velikost okna (šířka 1000px a výška 600px)
+
+# Centrování okna
+window_width = 1000
+window_height = 800
+screen_width = root.winfo_screenwidth()
+screen_height = root.winfo_screenheight()
+
+# Vypočítání pozice pro centrování okna
+x_position = (screen_width - window_width) // 2
+y_position = (screen_height - window_height) // 2
+
+# Nastavení okna na střed
+root.geometry(f"{window_width}x{window_height}+{x_position}+{y_position}")
 
 # VSTUPNÍ PRVKY
 label_customer_name = ctk.CTkLabel(root, text="Jméno zákazníka")
