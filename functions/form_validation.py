@@ -1,4 +1,5 @@
 import re
+from tkinter import messagebox
 
 def validate_form(customer_name, phone, imei, email):
     errors = []
@@ -19,4 +20,11 @@ def validate_form(customer_name, phone, imei, email):
     if email and not re.match(r"[^@]+@[^@]+\.[^@]+", email):  # jednoduchý email formát
         errors.append("E-mail není platný.")
 
-    return errors
+    # Pokud jsou chyby, zobrazí se pop-up okno
+    if errors:
+        error_message = "\n".join(errors)
+        messagebox.showerror("Chyby ve formuláři", error_message)
+        return False
+
+    return True
+

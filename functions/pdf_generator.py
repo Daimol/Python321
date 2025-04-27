@@ -1,13 +1,14 @@
 from fpdf import FPDF
 
-
 def generate_pdf(customer_name, phone, imei, email, part_name, part_price, labor_price, brand, model):
     # Nastavení PDF
     pdf = FPDF()
     pdf.set_auto_page_break(auto=True, margin=15)
     pdf.add_page()
 
-    pdf.set_font("Arial", size=12)
+    # Načtení fontu DejaVu Sans (nahraď správnou cestou k souboru)
+    pdf.add_font('DejaVu', '', 'fonts/DejaVuSans.ttf', uni=True)
+    pdf.set_font('DejaVu', '', 12)
 
     # Přidání informací do PDF
     pdf.cell(200, 10, txt=f"Zakázkový list - {customer_name}", ln=True, align='C')
