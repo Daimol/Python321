@@ -1,5 +1,4 @@
 import customtkinter as ctk
-from functions.update_model_combobox import update_model_combobox
 from functions.device_loader import load_devices
 from functions.gui_elements import create_left_frame, create_right_frame, create_bottom_frame
 from functions.form_handler import on_generate_button_click
@@ -14,7 +13,9 @@ root.geometry("1000x600")
 root.eval('tk::PlaceWindow . center')
 
 frame_left, entry_customer_name, entry_phone, entry_imei, entry_email = create_left_frame(root)
-frame_right, entry_part_name, entry_part_price, brand_combobox, model_combobox = create_right_frame(root, devices_data)
+
+frame_right, entry_part_name, entry_part_price, brand_combobox, series_combobox, model_combobox = create_right_frame(root, devices_data)
+
 frame_bottom, entry_labor_price, button_generate = create_bottom_frame(root)
 
 # Přidání akce na tlačítko pro generování PDF

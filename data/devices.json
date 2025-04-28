@@ -1,25 +1,136 @@
 {
-  "Apple": ["iPhone", "iPad", "iPod", "Apple Watch", "MacBook", "AirPods"],
-  "Samsung": ["Galaxy A", "Galaxy J", "Galaxy Note", "Galaxy M", "Galaxy S", "Galaxy Tab / Note"],
-  "Huawei": ["P", "Mate", "Nova", "Y", "Honor"],
-  "Xiaomi": ["Mi", "Redmi", "Redmi Note", "Pocophone"],
-  "OnePlus": ["One", "2", "3", "X", "5", "6"],
-  "Sony": ["Xperia Z / XZ série", "Xperia X série", "Xperia L série", "Xperia M série", "Xperia 1"],
-  "LG": ["G", "K", "V", "Nexus", "Q"],
-  "Motorola": ["Moto G", "Moto X", "Moto E", "Moto Z", "Edge", "One"],
-  "Google": ["Pixel"],
-  "Nokia": ["Lumia", "2.3", "2.4", "3", "3.1", "3.2"],
-  "Realme": ["Realme C11", "Realme C21", "Realme C21Y", "Realme C25Y", "Realme C30", "Realme C31"],
-  "Oppo": ["Reno", "Find", "A série"],
-  "Doogee": ["X série", "F série", "S série"],
-  "Lenovo": ["A série", "K série", "Moto série", "P série", "Phab série", "S série"],
-  "Asus": ["Zenfone", "ROG Phone"],
-  "Alcatel": ["One Touch"],
-  "Blackview": ["BV série"],
-  "Infinix": ["Hot série", "Note série", "Zero série"],
-  "Ulefone": ["Armor série", "Power série", "Note série"],
-  "Tecno": ["Camon série", "Spark série", "Phantom série"],
-  "Vivo": ["V série", "Y série", "X série"],
-  "Vodafone": ["Smart série"],
-  "ZTE": ["Axon série", "Blade série"]
+  "Apple": {
+    "iPhone": ["iPhone 13", "iPhone 13 Pro", "iPhone 14"],
+    "iPad": ["iPad Air", "iPad Pro"],
+    "iPod": ["iPod Touch"],
+    "Apple Watch": ["Series 6", "Series 7"],
+    "MacBook": ["MacBook Pro", "MacBook Air"],
+    "AirPods": ["AirPods Pro", "AirPods Max"]
+  },
+  "Samsung": {
+    "Galaxy A": ["Galaxy A12", "Galaxy A52", "Galaxy A72"],
+    "Galaxy J": ["Galaxy J4", "Galaxy J6", "Galaxy J8"],
+    "Galaxy Note": ["Note 10", "Note 20"],
+    "Galaxy M": ["Galaxy M31", "Galaxy M51"],
+    "Galaxy S": ["Galaxy S21", "Galaxy S22"],
+    "Galaxy Tab / Note": ["Tab S7", "Tab A7"]
+  },
+  "Huawei": {
+    "P": ["P40", "P50"],
+    "Mate": ["Mate 40", "Mate 30"],
+    "Nova": ["Nova 8", "Nova 7"],
+    "Y": ["Y7a", "Y9s"],
+    "Honor": ["Honor 20", "Honor 9X"]
+  },
+  "Xiaomi": {
+    "Mi": ["Mi 11", "Mi 10"],
+    "Redmi": ["Redmi Note 10", "Redmi Note 11"],
+    "Redmi Note": ["Redmi Note 9", "Redmi Note 8"],
+    "Pocophone": ["Poco X3", "Poco M2"]
+  },
+  "OnePlus": {
+    "One": ["OnePlus One", "OnePlus 2"],
+    "2": ["OnePlus 2", "OnePlus 3"],
+    "3": ["OnePlus 3", "OnePlus 3T"],
+    "X": ["OnePlus X"],
+    "5": ["OnePlus 5", "OnePlus 5T"],
+    "6": ["OnePlus 6", "OnePlus 6T"]
+  },
+  "Sony": {
+    "Xperia Z / XZ série": ["Xperia Z5", "Xperia XZ2"],
+    "Xperia X série": ["Xperia XA", "Xperia XZ Premium"],
+    "Xperia L série": ["Xperia L1", "Xperia L2"],
+    "Xperia M série": ["Xperia M5", "Xperia M4 Aqua"],
+    "Xperia 1": ["Xperia 1 II", "Xperia 1 III"]
+  },
+  "LG": {
+    "G": ["LG G7", "LG G8"],
+    "K": ["LG K40", "LG K61"],
+    "V": ["LG V30", "LG V40"],
+    "Nexus": ["Nexus 5", "Nexus 6P"],
+    "Q": ["LG Q60", "LG Q70"]
+  },
+  "Motorola": {
+    "Moto G": ["Moto G Power", "Moto G Stylus"],
+    "Moto X": ["Moto X4", "Moto X Style"],
+    "Moto E": ["Moto E6", "Moto E7"],
+    "Moto Z": ["Moto Z2", "Moto Z3"],
+    "Edge": ["Moto Edge", "Moto Edge Plus"],
+    "One": ["Motorola One", "Motorola One Zoom"]
+  },
+  "Google": {
+    "Pixel": ["Pixel 5", "Pixel 6"]
+  },
+  "Nokia": {
+    "Lumia": ["Lumia 920", "Lumia 930"],
+    "2.3": ["Nokia 2.3"],
+    "2.4": ["Nokia 2.4"],
+    "3": ["Nokia 3.4"],
+    "3.1": ["Nokia 3.1"],
+    "3.2": ["Nokia 3.2"]
+  },
+  "Realme": {
+    "Realme C11": ["Realme C11"],
+    "Realme C21": ["Realme C21"],
+    "Realme C21Y": ["Realme C21Y"],
+    "Realme C25Y": ["Realme C25Y"],
+    "Realme C30": ["Realme C30"],
+    "Realme C31": ["Realme C31"]
+  },
+  "Oppo": {
+    "Reno": ["Oppo Reno 5", "Oppo Reno 4"],
+    "Find": ["Oppo Find X3", "Oppo Find X2"],
+    "A série": ["Oppo A52", "Oppo A72"]
+  },
+  "Doogee": {
+    "X série": ["Doogee X95", "Doogee X97"],
+    "F série": ["Doogee F9", "Doogee F10"],
+    "S série": ["Doogee S96", "Doogee S88"]
+  },
+  "Lenovo": {
+    "A série": ["Lenovo A6000", "Lenovo A7000"],
+    "K série": ["Lenovo K5", "Lenovo K6"],
+    "Moto série": ["Moto G", "Moto X"],
+    "P série": ["Lenovo P2", "Lenovo P1"],
+    "Phab série": ["Lenovo Phab 2", "Lenovo Phab 3"],
+    "S série": ["Lenovo S5", "Lenovo S1"]
+  },
+  "Asus": {
+    "Zenfone": ["Zenfone 7", "Zenfone 6"],
+    "ROG Phone": ["ROG Phone 3", "ROG Phone 5"]
+  },
+  "Alcatel": {
+    "One Touch": ["One Touch Idol 3", "One Touch Pop 4"]
+  },
+  "Blackview": {
+    "BV série": ["Blackview BV9900", "Blackview BV9500"]
+  },
+  "Infinix": {
+    "Hot série": ["Infinix Hot 10", "Infinix Hot 9"],
+    "Note série": ["Infinix Note 10", "Infinix Note 8"],
+    "Zero série": ["Infinix Zero 8", "Infinix Zero 9"]
+  },
+  "Ulefone": {
+    "Armor série": ["Ulefone Armor 9", "Ulefone Armor 8"],
+    "Power série": ["Ulefone Power 3", "Ulefone Power 6"],
+    "Note série": ["Ulefone Note 7", "Ulefone Note 9"]
+  },
+  "Tecno": {
+    "Camon série": ["Tecno Camon 16", "Tecno Camon 15"],
+    "Spark série": ["Tecno Spark 6", "Tecno Spark 5"],
+    "Phantom série": ["Tecno Phantom 9", "Tecno Phantom 10"]
+  },
+  "Vivo": {
+    "V série": ["Vivo V21", "Vivo V20"],
+    "Y série": ["Vivo Y12", "Vivo Y20"],
+    "X série": ["Vivo X60", "Vivo X50"]
+  },
+  "Vodafone": {
+    "Smart série": ["Vodafone Smart N9", "Vodafone Smart N10"]
+  },
+  "ZTE": {
+    "Axon série": ["ZTE Axon 11", "ZTE Axon 20"],
+    "Blade série": ["ZTE Blade V10", "ZTE Blade A71"]
+  }
 }
+
