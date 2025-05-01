@@ -11,7 +11,7 @@ Generování PDF: FPDF
 
 Další: Práce se soubory, obrázky (logo)
 
-### 🗂️ Struktura projektu
+## 🗂️ Struktura projektu
 main.py – Hlavní spouštěcí skript aplikace
 
 functions/ – Moduly s pomocnými funkcemi
@@ -27,7 +27,7 @@ requirements.txt – Seznam potřebných knihoven
 readme – Popis projektu a návod k použití​
 GitHub
 
-### ✅ Aktuálně implementované funkce
+## ✅ Aktuálně implementované funkce
  Zadání údajů o zákazníkovi (jméno, telefon, email)
 
  Výběr typu opravy a zařízení
@@ -39,7 +39,7 @@ GitHub
  Možnost úpravy ceny opravy​
 GitHub
 
-### 📝 Plánované funkce / To-Do
+## 📝 Plánované funkce / To-Do
  Validace vstupních údajů
 
  Ukládání historie zakázek
@@ -50,7 +50,7 @@ GitHub
 
  Integrace s databází​
 
-### 🐞 Známé chyby a problémy
+## 🐞 Známé chyby a problémy
 Při generování PDF se nezobrazuje logo správně
 
 Chybová hláška při zadání neplatného emailu​
@@ -59,7 +59,7 @@ GitHub
 GitHub
 +1
 
-### 💡 Poznámky a nápady
+## 💡 Poznámky a nápady
 Možnost přidání funkce pro odeslání PDF emailem
 
 Implementace tmavého režimu GUI
