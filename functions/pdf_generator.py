@@ -1,4 +1,5 @@
 from fpdf import FPDF
+import os
 
 def generate_pdf(customer_name, phone, imei, email, part_name, part_price, labor_price, brand, model):
     # Nastavení PDF
@@ -24,4 +25,10 @@ def generate_pdf(customer_name, phone, imei, email, part_name, part_price, labor
     pdf.cell(100, 10, txt=f"Model: {model}", ln=True)
 
     # Uložení PDF
-    pdf.output(f"zakazkovy_list_{customer_name}.pdf")
+
+    folder = "Zakazky"
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+
+    pdf.output(f"{folder}/zakazkovy_list_{customer_name}.pdf")
+

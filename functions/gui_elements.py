@@ -1,17 +1,8 @@
-import customtkinter as ctk
 import tkinter as tk
-from functions.web_scraping import get_price
+import customtkinter as ctk
 from functions.generate_pdf_command import generate_pdf_command
-
-
-# Když se změní značka, aktualizuj modely
-def on_brand_selected(choice, model_combobox, devices_data):
-    models = devices_data.get(choice, [])
-    model_combobox.configure(values=models)
-    if models:
-        model_combobox.set(models[0])
-    else:
-        model_combobox.set("")
+from functions.update_model_combobox import on_series_selected,on_brand_selected,save_selected_values
+from functions.web_scraping import get_price
 
 
 def create_left_frame(root):
@@ -38,16 +29,22 @@ def create_left_frame(root):
 
     return frame_left, entry_customer_name, entry_phone, entry_imei, entry_email
 
-
 def create_right_frame(root, devices_data):
     frame_right = ctk.CTkFrame(root)
     frame_right.grid(row=0, column=1, padx=20, pady=20, sticky="nsew")
 
-    brand_combobox = ctk.CTkComboBox(frame_right, values=list(devices_data.keys()), command=lambda choice: on_brand_selected(choice, model_combobox, devices_data))
+    brand_combobox = ctk.CTkComboBox(frame_right, values=list(devices_data.keys()))
     brand_combobox.set("Vyber značku")
+
+    series_combobox = ctk.CTkComboBox(frame_right, values=[])
+    series_combobox.set("Vyber modelovou řadu")
 
     model_combobox = ctk.CTkComboBox(frame_right, values=[])
     model_combobox.set("Vyber model")
+
+    # Napojení akcí
+    brand_combobox.configure(command=lambda choice: on_brand_selected(choice, series_combobox, devices_data))
+    series_combobox.configure(command=lambda choice: on_series_selected(choice, model_combobox, devices_data, brand_combobox))
 
     label_part_name = ctk.CTkLabel(frame_right, text="Název dílu")
     entry_part_name = ctk.CTkEntry(frame_right)
@@ -55,7 +52,6 @@ def create_right_frame(root, devices_data):
     label_part_price = ctk.CTkLabel(frame_right, text="Cena dílu (nezobrazuje se v PDF)")
     entry_part_price = ctk.CTkEntry(frame_right)
 
-    # Funkce pro automatické načtení ceny
     def update_price_from_code(event=None):
         code = entry_part_name.get()
         price = get_price(code)
@@ -65,11 +61,15 @@ def create_right_frame(root, devices_data):
 
     entry_part_name.bind("<FocusOut>", update_price_from_code)
 
-    for i, widget in enumerate([brand_combobox, model_combobox, label_part_name, entry_part_name, label_part_price, entry_part_price]):
+    # Uložit výběr tlačítkem
+    save_button = ctk.CTkButton(frame_right, text="Uložit výběr", command=lambda: save_selected_values(brand_combobox, series_combobox, model_combobox))
+
+    for i, widget in enumerate([brand_combobox, series_combobox, model_combobox,
+                                 label_part_name, entry_part_name,
+                                 label_part_price, entry_part_price, save_button]):
         widget.grid(row=i, column=0, pady=5, sticky="ew")
 
-    return frame_right, entry_part_name, entry_part_price, brand_combobox, model_combobox
-
+    return frame_right, entry_part_name, entry_part_price, brand_combobox, series_combobox, model_combobox
 
 def create_bottom_frame(root):
     frame_bottom = ctk.CTkFrame(root)
@@ -80,12 +80,7 @@ def create_bottom_frame(root):
     entry_labor_price.insert(0, "500")
 
     button_generate = ctk.CTkButton(frame_bottom, text="Vygenerovat zakázkový list",
-
-                                    command=lambda: generate_pdf_command(entry_customer_name, entry_phone, entry_imei,
-                                                                         entry_email, entry_part_name, entry_part_price,
-                                                                         entry_labor_price, brand_combobox,
-                                                                         model_combobox))
-
+                                    command=lambda: generate_pdf_command())
 
     label_labor_price.grid(row=0, column=0, padx=10, pady=5, sticky="w")
     entry_labor_price.grid(row=0, column=1, padx=10, pady=5, sticky="ew")
