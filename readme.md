@@ -1,19 +1,67 @@
-# 📱 Servisní aplikace pro mobilní zařízení
+# 🛠️ Servisní aplikace pro mobilní zařízení
+## 🎯 Cíl aplikace
+Aplikace slouží k zadávání údajů o zakázkách pro servis mobilních zařízení a generování PDF s detailními informacemi o zákazníkovi, zařízení a ceně opravy.​
 
-Tato aplikace slouží k zadávání údajů o zakázkách pro servis mobilních zařízení a generování PDF s detailními informacemi o zákazníkovi, zařízení a ceně opravy. Aplikace umožňuje přidat logo servisu do PDF souboru a snadno upravit údaje o opravách. 🛠️
+## 📚 Použité technologie a knihovny
+Programovací jazyk: Python
 
-## 🌟 Funkce:
-- ✍️ Zadání jména, telefonu, emailu a dalších informací o zákazníkovi
-- 🛠️ Výběr typu opravy a zařízení
-- 💸 Zobrazení ceny za opravu
-- 📄 Generování PDF s informacemi a přidaným logem
-- ✏️ Možnost úpravy ceny opravy
+GUI knihovna: CustomTkinter
 
-## 🚀 Použití:
-1. Nainstalujte požadované knihovny:
-   - customtkinter 🎨
-   - fpdf2 📄
-   - beautifulsoup4 🧑‍💻
-   - requests 🌐
+Generování PDF: FPDF
 
-2. Spusťte aplikaci pomocí `python main.py` a začněte zadávat zakázky! 😄
+Další: Práce se soubory, obrázky (logo)
+
+### 🗂️ Struktura projektu
+main.py – Hlavní spouštěcí skript aplikace
+
+functions/ – Moduly s pomocnými funkcemi
+
+data/ – Ukládání dat o zakázkách
+
+fonts/ – Písma používaná v PDF
+
+logo/ – Logo servisu pro PDF
+
+requirements.txt – Seznam potřebných knihoven
+
+readme – Popis projektu a návod k použití​
+GitHub
+
+### ✅ Aktuálně implementované funkce
+ Zadání údajů o zákazníkovi (jméno, telefon, email)
+
+ Výběr typu opravy a zařízení
+
+ Zobrazení ceny za opravu
+
+ Generování PDF s informacemi a logem
+
+ Možnost úpravy ceny opravy​
+GitHub
+
+### 📝 Plánované funkce / To-Do
+ Validace vstupních údajů
+
+ Ukládání historie zakázek
+
+ Možnost exportu dat do CSV
+
+ Přidání více jazykových mutací
+
+ Integrace s databází​
+
+### 🐞 Známé chyby a problémy
+Při generování PDF se nezobrazuje logo správně
+
+Chybová hláška při zadání neplatného emailu​
+GitHub
++1
+GitHub
++1
+
+### 💡 Poznámky a nápady
+Možnost přidání funkce pro odeslání PDF emailem
+
+Implementace tmavého režimu GUI
+
+Vytvoření instalačního balíčku pro Windows
