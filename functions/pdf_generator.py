@@ -1,5 +1,6 @@
+
+from functions.file_utils import get_new_pdf_filename
 from fpdf import FPDF
-import os
 
 def generate_pdf(customer_name, phone, imei, email, part_name, part_price, labor_price, brand, model):
     # Nastavení PDF
@@ -24,11 +25,10 @@ def generate_pdf(customer_name, phone, imei, email, part_name, part_price, labor
     pdf.cell(100, 10, txt=f"Značka: {brand}", ln=True)
     pdf.cell(100, 10, txt=f"Model: {model}", ln=True)
 
+    # Získání unikátního názvu souboru
+    pdf_filename = get_new_pdf_filename()
+
     # Uložení PDF
+    pdf.output(pdf_filename)
 
-    folder = "Zakazky"
-    if not os.path.exists(folder):
-        os.makedirs(folder)
-
-    pdf.output(f"{folder}/zakazkovy_list_{customer_name}.pdf")
 

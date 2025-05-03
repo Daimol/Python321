@@ -27,4 +27,3 @@ def validate_form(customer_name, phone, imei, email):
         return False
 
     return True
-
