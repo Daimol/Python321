@@ -2,7 +2,7 @@ import tkinter as tk
 import customtkinter as ctk
 from functions.update_model_combobox import on_series_selected, on_brand_selected, save_selected_values
 from functions.web_scraping import get_price
-from functions.file_utils import get_current_order_number
+from functions.form_handler import on_generate_button_click  # Importuj funkci pro generování PDF
 
 def create_gui(root, devices_data):
     ctk.set_appearance_mode("dark")
@@ -15,14 +15,20 @@ def create_gui(root, devices_data):
     frame_top.grid(row=0, column=0, columnspan=2, padx=20, pady=(20, 10), sticky="ew")
     frame_top.grid_columnconfigure(0, weight=1)
 
-    current_order_number = get_current_order_number()
-    label_order_number = ctk.CTkLabel(frame_top, text=f"Číslo zakázky: SE{current_order_number}", font=("Arial", 18, "bold"))
+    # Label pro číslo zakázky (Dynamické číslo zakázky)
+    label_order_number = ctk.CTkLabel(frame_top, text="Číslo zakázky: 001", font=("Arial", 18, "bold"))
     label_order_number.grid(row=0, column=0, padx=20, pady=10, sticky="w")
 
     # Levý rámec
     frame_left = ctk.CTkFrame(root, fg_color="gray10")
     frame_left.grid(row=1, column=0, padx=40, pady=20, sticky="nsew")
     frame_left.grid_columnconfigure(0, weight=1)
+
+    label_category = ctk.CTkLabel(frame_left, text="Typ zakázky:")
+    label_category.grid(row=0, column=0, pady=(5, 0), padx=20, sticky="w")
+    dropdown_category = ctk.CTkOptionMenu(frame_left, values=["zakázky", "instalace", "reklamace"])
+    dropdown_category.set("zakázky")
+    dropdown_category.grid(row=1, column=0, padx=20, pady=(0, 10), sticky="ew")
 
     labels_entries_left = [
         ("Jméno zákazníka", ctk.CTkEntry(frame_left)),
@@ -33,8 +39,8 @@ def create_gui(root, devices_data):
 
     for i, (text, entry) in enumerate(labels_entries_left):
         label = ctk.CTkLabel(frame_left, text=text)
-        label.grid(row=i * 2, column=0, pady=(5, 0), padx=20, sticky="w")
-        entry.grid(row=i * 2 + 1, column=0, padx=20, pady=(0, 10), sticky="ew")
+        label.grid(row=i * 2 + 2, column=0, pady=(5, 0), padx=20, sticky="w")
+        entry.grid(row=i * 2 + 3, column=0, padx=20, pady=(0, 10), sticky="ew")
 
     entry_customer_name = labels_entries_left[0][1]
     entry_phone = labels_entries_left[1][1]
@@ -71,14 +77,16 @@ def create_gui(root, devices_data):
 
     entry_part_name.bind("<FocusOut>", update_price_from_code)
 
-    save_button = ctk.CTkButton(frame_right, text="Uložit výběr",
-                                command=lambda: save_selected_values(brand_combobox, series_combobox, model_combobox))
+    update_button = ctk.CTkButton(frame_right, text="Aktualizovat záznam",
+                                  command=lambda: update_device_record(brand_combobox, series_combobox, model_combobox,
+                                                                       entry_customer_name, entry_phone, entry_imei,
+                                                                       entry_email, entry_part_name, entry_part_price))
 
     widgets_right = [
         brand_combobox, series_combobox, model_combobox,
         label_part_name, entry_part_name,
         label_part_price, entry_part_price,
-        save_button
+        update_button
     ]
 
     for i, widget in enumerate(widgets_right):
@@ -93,16 +101,36 @@ def create_gui(root, devices_data):
     entry_labor_price = ctk.CTkEntry(frame_bottom)
     entry_labor_price.insert(0, "500")
 
-    button_generate = ctk.CTkButton(frame_bottom, text="Vygenerovat zakázkový list")
+    # Tato proměnná musí být přiřazena před použitím
+    button_generate = ctk.CTkButton(frame_bottom, text="Vygenerovat zakázkový list",
+                                    command=lambda: on_generate_button_click({
+                                        "frame_top": frame_top,
+                                        "label_order_number": label_order_number,
+                                        "dropdown_category": dropdown_category,
+                                        "frame_left": frame_left,
+                                        "entry_customer_name": entry_customer_name,
+                                        "entry_phone": entry_phone,
+                                        "entry_imei": entry_imei,
+                                        "entry_email": entry_email,
+                                        "frame_right": frame_right,
+                                        "entry_part_name": entry_part_name,
+                                        "entry_part_price": entry_part_price,
+                                        "brand_combobox": brand_combobox,
+                                        "series_combobox": series_combobox,
+                                        "model_combobox": model_combobox,
+                                        "frame_bottom": frame_bottom,
+                                        "entry_labor_price": entry_labor_price,
+                                        "button_generate": button_generate,
+                                    }))
 
     label_labor_price.grid(row=0, column=0, padx=10, pady=10, sticky="w")
     entry_labor_price.grid(row=0, column=1, padx=10, pady=10, sticky="ew")
     button_generate.grid(row=0, column=2, padx=10, pady=10)
 
-    # Vrací widgety i label s číslem zakázky pro pozdější aktualizaci
     return {
         "frame_top": frame_top,
         "label_order_number": label_order_number,
+        "dropdown_category": dropdown_category,
         "frame_left": frame_left,
         "entry_customer_name": entry_customer_name,
         "entry_phone": entry_phone,
@@ -116,5 +144,5 @@ def create_gui(root, devices_data):
         "model_combobox": model_combobox,
         "frame_bottom": frame_bottom,
         "entry_labor_price": entry_labor_price,
-        "button_generate": button_generate
+        "button_generate": button_generate,  # Zajistíme, že tlačítko je přiřazeno před vrácením
     }

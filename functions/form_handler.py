@@ -1,10 +1,10 @@
-from functions.pdf_generator import generate_pdf
-from functions.form_validation import validate_form
-from functions.file_utils import get_current_order_number
 from tkinter import messagebox
+from functions.form_validation import validate_form
+from functions.file_utils import get_formatted_order_number
+from functions.pdf_generator import PDFGenerator
 
 def on_generate_button_click(elements):
-    # Získání dat z formuláře
+    # Získání hodnot z GUI
     customer_name = elements["entry_customer_name"].get()
     phone = elements["entry_phone"].get()
     imei = elements["entry_imei"].get()
@@ -14,19 +14,41 @@ def on_generate_button_click(elements):
     labor_price = elements["entry_labor_price"].get()
     brand = elements["brand_combobox"].get()
     model = elements["model_combobox"].get()
+    category = elements["category_combobox"].get()
+
+    device_desc = elements["entry_device_description"].get("1.0", "end").strip()
+    repair_desc = elements["entry_repair_description"].get("1.0", "end").strip()
+    condition_desc = elements["entry_condition_description"].get("1.0", "end").strip()
+
+
+    category = "zakazky"
 
     # Validace formuláře
-    valid = validate_form(customer_name, phone, imei, email)
-    if not valid:
-        return  # Pokud validace neprošla, nebudeme pokračovat
+    if not validate_form(customer_name, phone, imei, email):
+        return
 
     try:
-        # Generování PDF
-        generate_pdf(customer_name, phone, imei, email, part_name, part_price, labor_price, brand, model)
+        # Vygenerování čísla zakázky
+        order_code = get_formatted_order_number(category)
 
-        # Aktualizace labelu s číslem zakázky
-        new_order_number = get_current_order_number()
-        elements["label_order_number"].configure(text=f"Číslo zakázky: SE{new_order_number}")
+        # Vytvoření PDF
+        pdf = PDFGenerator(
+            order_number=order_code,
+            customer_name=customer_name,
+            phone=phone,
+            imei=imei,
+            email=email,
+            brand=brand,
+            model=model,
+            part_name=part_name,
+            part_price=part_price,
+            labor_price=labor_price,
+            device_description=device_desc,
+            repair_description=repair_desc,
+            condition_description=condition_desc,
+            category=category
+        )
+        pdf.generate_pdf()
 
         messagebox.showinfo("Hotovo", "Zakázkový list byl úspěšně vygenerován.")
     except Exception as e:

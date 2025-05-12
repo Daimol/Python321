@@ -1,37 +1,73 @@
 import os
-import re
+from datetime import datetime
 
-def get_current_order_number():
-    directory = "zakazky"
-    if not os.path.exists(directory):
-        return "00000001"
 
-    pdf_files = [f for f in os.listdir(directory) if f.endswith(".pdf") and f.startswith("SE")]
-    numbers = []
+# Cesty ke složkám
+ORDER_FOLDERS = {
+    "zakazky": "data/zakazky",
+    "reklamace": "data/reklamace",
+    "instalace": "data/instalace"
+}
 
-    for f in pdf_files:
-        match = re.search(r"SE(\d{8})", f)
-        if match:
-            numbers.append(int(match.group(1)))
+def ensure_directories():
+    """Zajistí, že složky pro zakázky, reklamace a instalace existují."""
+    for path in ORDER_FOLDERS.values():
+        os.makedirs(path, exist_ok=True)
+    os.makedirs("data", exist_ok=True)
 
-    if not numbers:
-        return "00000001"
+def get_prefix_for_category(category):
+    return {
+        "zakazky": "SE",
+        "instalace": "IN",
+        "reklamace": "RE"
+    }.get(category, "SE")  # Default SE
 
-    max_number = max(numbers)
-    return f"{max_number:08d}"
+def load_counters():
+    """Načte čítače ze souboru."""
+    counters = {}
+    if os.path.exists("data/counters.txt"):
+        with open("data/counters.txt", "r") as f:
+            for line in f:
+                key, val = line.strip().split("=")
+                counters[key] = int(val)
+    return counters
 
-def get_new_pdf_filename():
-    directory = "zakazky"
-    if not os.path.exists(directory):
-        os.makedirs(directory)
+def save_counters(counters):
+    """Uloží čítače do souboru."""
+    with open("data/counters.txt", "w") as f:
+        for key, val in counters.items():
+            f.write(f"{key}={val}\n")
 
-    pdf_files = [f for f in os.listdir(directory) if f.endswith(".pdf") and f.startswith("SE")]
-    numbers = []
+def generate_order_number(category, order_index):
+    year = datetime.now().year % 100
+    prefix = get_prefix_for_category(category)
+    return f"{prefix}{year}{order_index:06d}"
 
-    for f in pdf_files:
-        match = re.search(r"SE(\d{8})", f)
-        if match:
-            numbers.append(int(match.group(1)))
+def get_next_order_number(category):
+    """Vrátí nový číslo zakázky a zároveň uloží nový index do souboru."""
+    ensure_directories()
+    counters = load_counters()
 
-    next_number = max(numbers) + 1 if numbers else 1
-    return os.path.join(directory, f"SE{next_number:08d}.pdf")
+    year = datetime.now().year % 100
+    key = f"{category}_{year}"
+    index = counters.get(key, 0) + 1
+    counters[key] = index
+
+    save_counters(counters)
+    return generate_order_number(category, index)
+
+def get_formatted_order_number(category="zakazky"):
+    """Vrací nové číslo zakázky ve formátu SE25000001 a zároveň zvýší čítač."""
+    counters = load_counters()
+
+    year = datetime.now().year % 100
+    key = f"{category}_{year}"
+    index = counters.get(key, 0) + 1
+    counters[key] = index
+    save_counters(counters)
+
+    return generate_order_number(category, index)
+
+def get_new_pdf_filename(order_number, customer_name):
+    safe_name = customer_name.replace(" ", "_")
+    return f"{order_number}_{safe_name}.pdf"
