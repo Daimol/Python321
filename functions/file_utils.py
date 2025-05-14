@@ -71,3 +71,9 @@ def get_formatted_order_number(category="zakazky"):
 def get_new_pdf_filename(order_number, customer_name):
     safe_name = customer_name.replace(" ", "_")
     return f"{order_number}_{safe_name}.pdf"
+
+def update_device_record(brand_combobox, series_combobox, model_combobox,
+                         entry_customer_name, entry_phone, entry_imei,
+                         entry_email, entry_part_name, entry_part_price):
+    # Vaše logika pro aktualizaci záznamu
+    pass

@@ -14,16 +14,14 @@ def on_generate_button_click(elements):
     labor_price = elements["entry_labor_price"].get()
     brand = elements["brand_combobox"].get()
     model = elements["model_combobox"].get()
-    category = elements["category_combobox"].get()
+    category = elements["dropdown_category"].get()
 
     device_desc = elements["entry_device_description"].get("1.0", "end").strip()
     repair_desc = elements["entry_repair_description"].get("1.0", "end").strip()
     condition_desc = elements["entry_condition_description"].get("1.0", "end").strip()
 
 
-    category = "zakazky"
-
-    # Validace formuláře
+      # Validace formuláře
     if not validate_form(customer_name, phone, imei, email):
         return
 

@@ -50,14 +50,14 @@ class PDFGenerator:
 
     def _add_device_info(self):
         self.pdf.ln(5)
-        self.pdf.set_font('DejaVu', 'B', 12)
+        self.pdf.set_font('DejaVu', '', 12)
         self.pdf.cell(0, 10, "Zařízení:", ln=True)
         self.pdf.set_font('DejaVu', '', 12)
         self.pdf.multi_cell(0, 8, f"{self.brand} {self.model}\n{self.device_description}")
 
     def _add_condition_and_repair_info(self):
         self.pdf.ln(2)
-        self.pdf.set_font('DejaVu', 'B', 12)
+        self.pdf.set_font('DejaVu', '', 12)
         self.pdf.cell(0, 10, "Popis závady a opravy:", ln=True)
         self.pdf.set_font('DejaVu', '', 12)
         self.pdf.multi_cell(0, 8, f"{self.repair_description}\n\nStav zařízení:\n{self.condition_description}")
@@ -81,6 +81,6 @@ class PDFGenerator:
         self._add_prices()
         self._add_footer()
 
-        filename = get_new_pdf_filename(self.order_number, self.customer_name, self.category)
+        filename = get_new_pdf_filename(self.order_number)
         self.pdf.output(filename)
         return filename
