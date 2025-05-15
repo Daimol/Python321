@@ -31,39 +31,53 @@ class PDFGenerator:
         self.pdf.set_font('DejaVu', '', 12)
 
     def _add_header(self):
-        self.pdf.set_font('DejaVu', '', 14)
-        self.pdf.cell(0, 10, "Servisní protokol", ln=True, align='C')
+        # Logo a název firmy v hlavičce
+        try:
+            self.pdf.image("assets/logo.png", 10, 10, 40)  # Přizpůsob rozměry
+        except:
+            pass  # Pokud není logo k dispozici
+
+        self.pdf.set_xy(55, 10)
+        self.pdf.set_font('DejaVu', '', 16)
+        self.pdf.cell(0, 10, "KRAKIT – Servisní protokol", ln=True)
+
         self.pdf.set_font('DejaVu', '', 12)
-        self.pdf.cell(0, 10, f"Číslo zakázky: {self.order_number}", ln=True, align='C')
-        self.pdf.ln(5)
+        self.pdf.set_xy(55, 18)
+        self.pdf.cell(0, 10, f"Číslo zakázky: {self.order_number}", ln=True)
+        self.pdf.ln(10)
 
     def _add_customer_and_company_info(self):
-        # Levý sloupec – info o firmě
-        self.pdf.set_xy(10, 40)
-        self.pdf.multi_cell(90, 8, "KRAKIT\nEmail: info@krakit.cz\nTel: +420 123 456 789")
+        # Levý sloupec – Zákazník
+        self.pdf.set_xy(10, 35)
+        self.pdf.set_font('DejaVu', '', 12)
+        self.pdf.multi_cell(90, 8,
+            f"Zákazník:\n{self.customer_name}\nTel: {self.phone}\nEmail: {self.email}\nIMEI: {self.imei}",
+            border=1)
 
-        # Pravý sloupec – info o zákazníkovi
-        self.pdf.set_xy(110, 40)
-        self.pdf.multi_cell(90, 8, f"Zákazník:\n{self.customer_name}\nTel: {self.phone}\nEmail: {self.email}\nIMEI: {self.imei}")
-
-        self.pdf.ln(5)
+        # Pravý sloupec – Firma
+        self.pdf.set_xy(110, 35)
+        self.pdf.multi_cell(90, 8,
+            "Servis:\nKRAKIT\nEmail: info@krakit.cz\nTel: +420 123 456 789\nIČO: 12345678\nAdresa: Servisní 12, Praha",
+            border=1)
 
     def _add_device_info(self):
-        self.pdf.ln(5)
+        self.pdf.ln(10)
         self.pdf.set_font('DejaVu', '', 12)
         self.pdf.cell(0, 10, "Zařízení:", ln=True)
-        self.pdf.set_font('DejaVu', '', 12)
-        self.pdf.multi_cell(0, 8, f"{self.brand} {self.model}\n{self.device_description}")
+        self.pdf.multi_cell(0, 8, f"{self.brand} {self.model}\n{self.device_description}", border=1)
 
     def _add_condition_and_repair_info(self):
-        self.pdf.ln(2)
+        self.pdf.ln(5)
         self.pdf.set_font('DejaVu', '', 12)
-        self.pdf.cell(0, 10, "Popis závady a opravy:", ln=True)
-        self.pdf.set_font('DejaVu', '', 12)
-        self.pdf.multi_cell(0, 8, f"{self.repair_description}\n\nStav zařízení:\n{self.condition_description}")
+        self.pdf.cell(0, 10, "Popis opravy:", ln=True)
+        self.pdf.multi_cell(0, 8, self.repair_description, border=1)
+
+        self.pdf.ln(5)
+        self.pdf.cell(0, 10, "Stav zařízení při převzetí:", ln=True)
+        self.pdf.multi_cell(0, 8, self.condition_description, border=1)
 
     def _add_prices(self):
-        self.pdf.ln(2)
+        self.pdf.ln(5)
         self.pdf.set_font('DejaVu', '', 12)
         self.pdf.cell(0, 10, f"Cena práce: {self.labor_price} Kč", ln=True)
 
