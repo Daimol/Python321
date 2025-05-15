@@ -20,7 +20,7 @@ def draw_boxed_section(c, x, y, w, title, content):
 
 
 class PDFGenerator:
-    def __init__(self, font_path="fonts/DejaVuSans.ttf", logo_path="assets/logo.png"):
+    def __init__(self, font_path="fonts/DejaVuSans.ttf", logo_path="resources/logo.png"):
         self.font_path = font_path
         self.logo_path = logo_path
         self.register_fonts()

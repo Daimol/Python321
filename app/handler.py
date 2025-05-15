@@ -1,7 +1,6 @@
 from tkinter import messagebox
-from functions.form_validation import validate_form
-from functions.pdf_generator import PDFGenerator
-from functions.file_utils import get_formatted_order_number  # import funkce pro číslo zakázky
+from app.validation import validate_form
+from app.pdf_generator import PDFGenerator
 
 def on_generate_button_click(elements):
     # Získání hodnot z GUI

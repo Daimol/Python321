@@ -1,7 +1,7 @@
 import customtkinter as ctk
-from functions.device_loader import load_devices
-from functions.create_gui import create_gui
-from functions.form_handler import on_generate_button_click
+from app.data_loader import load_devices
+from app.gui import create_gui
+from app.handler import on_generate_button_click
 
 class ZakazkovyListApp:
     def __init__(self):

@@ -1,8 +1,8 @@
 import tkinter as tk
 import customtkinter as ctk
-from functions.update_model_combobox import on_series_selected, on_brand_selected, save_selected_values
-from functions.web_scraping import get_price
-from functions.form_handler import on_generate_button_click
+from app.update_model_combobox import on_series_selected, on_brand_selected, save_selected_values
+from app.web_scraping import get_price
+from app.handler import on_generate_button_click
 
 def create_gui(root, devices_data):
     ctk.set_appearance_mode("dark")
