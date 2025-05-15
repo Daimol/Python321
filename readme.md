@@ -1,67 +1,74 @@
 # 🛠️ Servisní aplikace pro mobilní zařízení
-## 🎯 Cíl aplikace
-Aplikace slouží k zadávání údajů o zakázkách pro servis mobilních zařízení a generování PDF s detailními informacemi o zákazníkovi, zařízení a ceně opravy.​
 
-## 📚 Použité technologie a knihovny
-Programovací jazyk: Python
+---
 
-GUI knihovna: CustomTkinter
+### 🎯 Cíl aplikace  
+Aplikace slouží k zadávání údajů o zakázkách pro servis mobilních zařízení a generování PDF s detailními informacemi o zákazníkovi, zařízení a ceně opravy.
 
-Generování PDF: FPDF
+---
 
-Další: Práce se soubory, obrázky (logo)
+### 📚 Použité technologie a knihovny  
+- Programovací jazyk: Python  
+- GUI knihovna: CustomTkinter  
+- Generování PDF: FPDF  
+- Další: práce se soubory, obrázky (logo)
 
-## 🗂️ Struktura projektu
-main.py – Hlavní spouštěcí skript aplikace
+---
 
-functions/ – Moduly s pomocnými funkcemi
+### 🗂️ Struktura projektu
 
-data/ – Ukládání dat o zakázkách
+    app/
+    ├── core.py                 # Startovací a hlavní logika aplikace
+    ├── main.py                 # Spouštěcí skript aplikace
+    ├── gui/
+    │   └── app_gui.py          # Definice GUI třídy a vizuální logika
+    ├── handler/
+    │   └── generate_handler.py # Logika generování PDF, validace, event handler
+    ├── functions/              # Pomocné funkce (validace, práce s čísly, atd.)
+    ├── data/                   # Ukládání dat o zakázkách
+    ├── fonts/                  # Písma používaná v PDF
+    ├── logo/                   # Logo servisu pro PDF
+    └── resources/
+    └── icons/
+        └── ikona.ico       # Ikona aplikace
+    requirements.txt            # Seznam závislostí
+    readme.md                  # Popis projektu a návod k použití
 
-fonts/ – Písma používaná v PDF
+---
 
-logo/ – Logo servisu pro PDF
+### ✅ Aktuálně implementované funkce  
+- Zadání údajů o zákazníkovi (jméno, telefon, email)  
+- Výběr typu opravy a zařízení (značka, model, kategorie)  
+- Zobrazení ceny za opravu (součástky + práce)  
+- Generování PDF s informacemi a logem servisu  
+- Možnost úpravy ceny opravy
 
-requirements.txt – Seznam potřebných knihoven
+---
 
-readme – Popis projektu a návod k použití​
-GitHub
+### 📝 Plánované funkce / To-Do  
+- Validace vstupních údajů (telefon, email, čísla)  
+- Ukládání historie zakázek do souborů nebo databáze  
+- Export historie zakázek do CSV  
+- Přidání více jazykových mutací GUI a PDF  
+- Integrace s databází (např. SQLite nebo externí DB)
 
-## ✅ Aktuálně implementované funkce
- Zadání údajů o zákazníkovi (jméno, telefon, email)
+---
 
- Výběr typu opravy a zařízení
+### 🐞 Známé chyby a problémy  
+- Při generování PDF se logo nezobrazuje správně (formát / cesta)  
+- Chybová hláška při zadání neplatného emailu (nutná lepší validace)
 
- Zobrazení ceny za opravu
+---
 
- Generování PDF s informacemi a logem
+### 💡 Poznámky a nápady  
+- Přidání funkce pro odeslání PDF emailem přímo z aplikace  
+- Implementace tmavého režimu GUI pomocí CustomTkinter  
+- Vytvoření instalačního balíčku pro Windows (např. PyInstaller)  
+- Vylepšení UX, například automatické doplňování modelů podle značky  
+- Podpora více zařízení a typů oprav
 
- Možnost úpravy ceny opravy​
-GitHub
+---
 
-## 📝 Plánované funkce / To-Do
- Validace vstupních údajů
+### 🚀 Jak spustit aplikaci
 
- Ukládání historie zakázek
-
- Možnost exportu dat do CSV
-
- Přidání více jazykových mutací
-
- Integrace s databází​
-
-## 🐞 Známé chyby a problémy
-Při generování PDF se nezobrazuje logo správně
-
-Chybová hláška při zadání neplatného emailu​
-GitHub
-+1
-GitHub
-+1
-
-## 💡 Poznámky a nápady
-Možnost přidání funkce pro odeslání PDF emailem
-
-Implementace tmavého režimu GUI
-
-Vytvoření instalačního balíčku pro Windows
+1. Klonujte repozitář:
