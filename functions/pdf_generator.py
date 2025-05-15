@@ -1,100 +1,82 @@
-from fpdf import FPDF
-from functions.file_utils import get_new_pdf_filename
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfgen import canvas
+from reportlab.lib.utils import ImageReader
+from reportlab.lib import colors
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+import os
+
+
+def draw_boxed_section(c, x, y, w, title, content):
+    """Pomocná metoda pro kreslení sekcí s nadpisem a textem."""
+    c.setFont("DejaVuSans", 11)
+    c.drawString(x, y, title)
+    c.setFont("DejaVuSans", 10)
+    c.rect(x, y - 60, w, 50)
+    text = c.beginText(x + 5, y - 15)
+    for line in content.split("\n"):
+        text.textLine(line)
+    c.drawText(text)
 
 
 class PDFGenerator:
-    def __init__(self, order_number, customer_name, phone, imei, email,
-                 brand, model, part_name, part_price, labor_price,
-                 device_description, repair_description, condition_description,
-                 category="zakazky"):
-        self.order_number = order_number
-        self.customer_name = customer_name
-        self.phone = phone
-        self.imei = imei
-        self.email = email
-        self.brand = brand
-        self.model = model
-        self.part_name = part_name
-        self.part_price = part_price
-        self.labor_price = labor_price
-        self.device_description = device_description
-        self.repair_description = repair_description
-        self.condition_description = condition_description
-        self.category = category
-        self.pdf = FPDF()
-        self._setup_pdf()
+    def __init__(self, font_path="fonts/DejaVuSans.ttf", logo_path="assets/logo.png"):
+        self.font_path = font_path
+        self.logo_path = logo_path
+        self.register_fonts()
 
-    def _setup_pdf(self):
-        self.pdf.set_auto_page_break(auto=True, margin=15)
-        self.pdf.add_page()
-        self.pdf.add_font('DejaVu', '', 'fonts/DejaVuSans.ttf', uni=True)
-        self.pdf.set_font('DejaVu', '', 12)
+    def register_fonts(self):
+        pdfmetrics.registerFont(TTFont("DejaVuSans", self.font_path))
 
-    def _add_header(self):
-        # Logo a název firmy v hlavičce
-        try:
-            self.pdf.image("assets/logo.png", 10, 10, 40)  # Přizpůsob rozměry
-        except:
-            pass  # Pokud není logo k dispozici
+    def generate_pdf(self, path, order_number, customer_data, device_data, service_data, company_data):
+        c = canvas.Canvas(path, pagesize=A4)
+        width, height = A4
+        margin = 40
 
-        self.pdf.set_xy(55, 10)
-        self.pdf.set_font('DejaVu', '', 16)
-        self.pdf.cell(0, 10, "KRAKIT – Servisní protokol", ln=True)
+        c.setFont("DejaVuSans", 10)
 
-        self.pdf.set_font('DejaVu', '', 12)
-        self.pdf.set_xy(55, 18)
-        self.pdf.cell(0, 10, f"Číslo zakázky: {self.order_number}", ln=True)
-        self.pdf.ln(10)
+        # Logo a název firmy
+        if os.path.exists(self.logo_path):
+            logo = ImageReader(self.logo_path)
+            c.drawImage(logo, margin, height - 80, width=100, preserveAspectRatio=True, mask='auto')
+        c.setFont("DejaVuSans", 16)
+        c.drawRightString(width - margin, height - 50, company_data.get("name", "Název firmy"))
 
-    def _add_customer_and_company_info(self):
-        # Levý sloupec – Zákazník
-        self.pdf.set_xy(10, 35)
-        self.pdf.set_font('DejaVu', '', 12)
-        self.pdf.multi_cell(90, 8,
-            f"Zákazník:\n{self.customer_name}\nTel: {self.phone}\nEmail: {self.email}\nIMEI: {self.imei}",
-            border=1)
+        # Údaje o zákazníkovi
+        c.setFont("DejaVuSans", 10)
+        c.drawString(margin, height - 120, "Zákazník:")
+        y = height - 135
+        for label, value in customer_data.items():
+            c.drawString(margin + 10, y, f"{label}: {value}")
+            y -= 15
 
-        # Pravý sloupec – Firma
-        self.pdf.set_xy(110, 35)
-        self.pdf.multi_cell(90, 8,
-            "Servis:\nKRAKIT\nEmail: info@krakit.cz\nTel: +420 123 456 789\nIČO: 12345678\nAdresa: Servisní 12, Praha",
-            border=1)
+        # Údaje o firmě
+        c.drawRightString(width - margin, height - 120, "Servis:")
+        y = height - 135
+        for label, value in company_data.items():
+            c.drawRightString(width - margin - 10, y, f"{label}: {value}")
+            y -= 15
 
-    def _add_device_info(self):
-        self.pdf.ln(10)
-        self.pdf.set_font('DejaVu', '', 12)
-        self.pdf.cell(0, 10, "Zařízení:", ln=True)
-        self.pdf.multi_cell(0, 8, f"{self.brand} {self.model}\n{self.device_description}", border=1)
+        # Číslo zakázky
+        c.setFont("DejaVuSans", 12)
+        c.setFillColor(colors.darkblue)
+        c.drawCentredString(width / 2, height - 200, f"Zakázkový list č. {order_number}")
+        c.setFillColor(colors.black)
 
-    def _add_condition_and_repair_info(self):
-        self.pdf.ln(5)
-        self.pdf.set_font('DejaVu', '', 12)
-        self.pdf.cell(0, 10, "Popis opravy:", ln=True)
-        self.pdf.multi_cell(0, 8, self.repair_description, border=1)
+        # Popis zařízení
+        draw_boxed_section(c, margin, height - 240, width - 2 * margin, "Popis zařízení", device_data.get("desc", ""))
 
-        self.pdf.ln(5)
-        self.pdf.cell(0, 10, "Stav zařízení při převzetí:", ln=True)
-        self.pdf.multi_cell(0, 8, self.condition_description, border=1)
+        # Popis opravy
+        draw_boxed_section(c, margin, height - 340, width - 2 * margin, "Popis opravy", service_data.get("repair", ""))
 
-    def _add_prices(self):
-        self.pdf.ln(5)
-        self.pdf.set_font('DejaVu', '', 12)
-        self.pdf.cell(0, 10, f"Cena práce: {self.labor_price} Kč", ln=True)
+        # Stav zařízení při převzetí
+        draw_boxed_section(c, margin, height - 440, width - 2 * margin, "Stav zařízení při převzetí", service_data.get("condition", ""))
 
-    def _add_footer(self):
-        self.pdf.ln(20)
-        self.pdf.cell(90, 10, "Předal:", border="T")
-        self.pdf.cell(10)
-        self.pdf.cell(90, 10, "Převzal:", border="T")
+        # Cena práce
+        c.setFont("DejaVuSans", 10)
+        c.drawString(margin, height - 500, f"Cena práce: {service_data.get('price', '0')} Kč")
 
-    def generate_pdf(self):
-        self._add_header()
-        self._add_customer_and_company_info()
-        self._add_device_info()
-        self._add_condition_and_repair_info()
-        self._add_prices()
-        self._add_footer()
+        # Datum
+        c.drawRightString(width - margin, height - 500, f"Datum: {service_data.get('date', '')}")
 
-        filename = get_new_pdf_filename(self.order_number)
-        self.pdf.output(filename)
-        return filename
+        c.save()

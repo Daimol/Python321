@@ -2,3 +2,4 @@ customtkinter
 fpdf2
 beautifulsoup4
 requests
+reportlab

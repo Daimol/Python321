@@ -3,7 +3,6 @@ import customtkinter as ctk
 from functions.update_model_combobox import on_series_selected, on_brand_selected, save_selected_values
 from functions.web_scraping import get_price
 from functions.form_handler import on_generate_button_click
-from functions.file_utils import update_device_record
 
 def create_gui(root, devices_data):
     ctk.set_appearance_mode("dark")
@@ -77,19 +76,13 @@ def create_gui(root, devices_data):
 
     entry_part_name.bind("<FocusOut>", update_price_from_code)
 
-    update_button = ctk.CTkButton(frame_second, text="Aktualizovat záznam",
-                                  command=lambda: update_device_record(brand_combobox, series_combobox, model_combobox,
-                                                                       entry_customer_name, entry_phone, entry_imei,
-                                                                       entry_email, entry_part_name, entry_part_price))
-
-    widgets_right = [
+    widgets_middle = [
         brand_combobox, series_combobox, model_combobox,
         label_part_name, entry_part_name,
         label_part_price, entry_part_price,
-        update_button
     ]
 
-    for i, widget in enumerate(widgets_right):
+    for i, widget in enumerate(widgets_middle):
         widget.grid(row=i, column=0, pady=5, padx=20, sticky="ew")
 
     # Třetí sloupec (vpravo)
