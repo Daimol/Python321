@@ -17,22 +17,42 @@ Aplikace slouží k zadávání údajů o zakázkách pro servis mobilních zař
 
 ### 🗂️ Struktura projektu
 
-    app/
-    ├── core.py                 # Startovací a hlavní logika aplikace
-    ├── main.py                 # Spouštěcí skript aplikace
-    ├── gui/
-    │   └── app_gui.py          # Definice GUI třídy a vizuální logika
-    ├── handler/
-    │   └── generate_handler.py # Logika generování PDF, validace, event handler
-    ├── functions/              # Pomocné funkce (validace, práce s čísly, atd.)
-    ├── data/                   # Ukládání dat o zakázkách
-    ├── fonts/                  # Písma používaná v PDF
-    ├── logo/                   # Logo servisu pro PDF
-    └── resources/
-    └── icons/
-        └── ikona.ico       # Ikona aplikace
-    requirements.txt            # Seznam závislostí
-    readme.md                  # Popis projektu a návod k použití
+    Python321/
+    ├── app/                     # Hlavní aplikační balíček
+    │   ├── gui/                 # Vše, co se týká GUI (okna, widgety)
+    │   │   ├── widgets/         # Vlastní widgety
+    │   │   ├── app_gui.py       # Hlavní GUI aplikace
+    │   │   └── theme.py         # Styl, barvy
+    │   │
+    │   ├── core/                # Logika aplikace (generování, výpočty, validace)
+    │   │   ├── pdf_generator.py
+    │   │   ├── validation.py
+    │   │   └── ...
+    │   │
+    │   ├── data/                # Správa vstupních/konfiguračních souborů
+    │   │   ├── devices.json
+    │   │   ├── counters.txt
+    │   │   └── ...
+    │   │
+    │   ├── services/            # Práce s daty – načítání, ukládání, manipulace
+    │   │   ├── product_loader.py
+    │   │   ├── file_utils.py
+    │   │   └── order_manager.py
+    │   │
+    │   ├── main.py              # Vstupní bod aplikace (GUI launcher)
+    │   └── __init__.py          # (prázdný nebo s definovanými exporty)
+    │
+    ├── product/                 # Vzorky dat (např. json soubory zařízení)
+    │   └── apple.json
+    │
+    ├── resources/               # Obrázky, fonty, ikony
+    │   ├── fonts/
+    │   ├── icons/
+    │   └── images/
+    │
+    ├── setup.py                 # Volitelně spouštěč nebo CLI
+    ├── requirements.txt         # Seznam závislostí
+    └── README.md
 
 ---
 

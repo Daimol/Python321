@@ -1,91 +1,98 @@
-import os
-import customtkinter as ctk
-from app.handler.generate_handler import GenerateHandler
+from app.services.product_loader import load_products, get_brands, get_models_by_brand
 
-class ZakazkovyListApp(ctk.CTkFrame):
-    def __init__(self, root, devices_data):
-        super().__init__(root)
-        self.root = root
-        self.devices_data = devices_data
-        self.handler = GenerateHandler(self)
+from PySide6.QtWidgets import (
+    QMainWindow, QWidget, QLabel, QVBoxLayout, QHBoxLayout,
+    QPushButton, QComboBox, QLineEdit, QTextEdit
+)
 
-        # Nastavení ikony
-        icon_path = os.path.join(os.path.dirname(__file__), '..', 'resources', 'icons', 'ikona.ico')
-        try:
-            self.root.iconbitmap(icon_path)
-        except Exception as e:
-            print(f"Nelze načíst ikonu: {e}")
 
-        self.pack(fill="both", expand=True, padx=20, pady=20)
+class ZakazkovyListApp(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Zakázkový list")
+        self.setMinimumSize(1000, 700)
 
-        self.root.title("KRAKIT")
-        self.root.geometry("700x600")
+        # Načteme produkty
+        self.products = load_products("product/apple.json")
 
-        # Rámeček pro formulář
-        self.form_frame = ctk.CTkFrame(self)
-        self.form_frame.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
-        self.form_frame.columnconfigure(1, weight=1)  # Druhý sloupec roztahovatelný
+        self._init_ui()
 
-        # Label + Entry Jméno zákazníka
-        ctk.CTkLabel(self.form_frame, text="Jméno zákazníka:").grid(row=0, column=0, sticky="w", padx=5, pady=5)
-        self.entry_customer_name = ctk.CTkEntry(self.form_frame)
-        self.entry_customer_name.grid(row=0, column=1, sticky="ew", padx=5, pady=5)
+    def _init_ui(self):
+        central_widget = QWidget()
+        self.setCentralWidget(central_widget)
 
-        # Telefon
-        ctk.CTkLabel(self.form_frame, text="Telefon:").grid(row=1, column=0, sticky="w", padx=5, pady=5)
-        self.entry_phone = ctk.CTkEntry(self.form_frame)
-        self.entry_phone.grid(row=1, column=1, sticky="ew", padx=5, pady=5)
+        main_layout = QVBoxLayout()
+        central_widget.setLayout(main_layout)
 
-        # IMEI
-        ctk.CTkLabel(self.form_frame, text="IMEI:").grid(row=2, column=0, sticky="w", padx=5, pady=5)
-        self.entry_imei = ctk.CTkEntry(self.form_frame)
-        self.entry_imei.grid(row=2, column=1, sticky="ew", padx=5, pady=5)
+        # --- Top panel ---
+        top_bar = QHBoxLayout()
+        top_bar.addWidget(QLabel("[Logo]"))
+        top_bar.addStretch()
+        top_bar.addWidget(QLabel("Zakázka č. SE-001"))
+        top_bar.addStretch()
+        top_bar.addWidget(QLabel("[Logo]"))
+        main_layout.addLayout(top_bar)
 
-        # Email
-        ctk.CTkLabel(self.form_frame, text="Email:").grid(row=3, column=0, sticky="w", padx=5, pady=5)
-        self.entry_email = ctk.CTkEntry(self.form_frame)
-        self.entry_email.grid(row=3, column=1, sticky="ew", padx=5, pady=5)
+        columns_layout = QHBoxLayout()
 
-        # Kategorie (ComboBox)
-        ctk.CTkLabel(self.form_frame, text="Kategorie:").grid(row=4, column=0, sticky="w", padx=5, pady=5)
-        self.dropdown_category = ctk.CTkComboBox(self.form_frame, values=["Zakázky", "Reklamace", "Servis"])
-        self.dropdown_category.grid(row=4, column=1, sticky="ew", padx=5, pady=5)
-        self.dropdown_category.set("Zakázky")
+        # Levý sloupec
+        left_col = QVBoxLayout()
+        left_col.addWidget(QLabel("Zákazník"))
+        left_col.addWidget(QLineEdit("Jméno"))
+        left_col.addWidget(QLineEdit("Telefon"))
+        left_col.addWidget(QLineEdit("Email"))
+        left_col.addWidget(QLabel("Zařízení"))
+        left_col.addWidget(QComboBox())
+        left_col.addWidget(QLabel("Práce"))
+        left_col.addWidget(QComboBox())
+        left_col.addWidget(QLabel("Cena práce + díly: 0 Kč"))
 
-        # Popis zařízení (Text)
-        ctk.CTkLabel(self.form_frame, text="Popis zařízení:").grid(row=5, column=0, sticky="nw", padx=5, pady=5)
-        self.entry_device_description = ctk.CTkTextbox(self.form_frame, height=80)
-        self.entry_device_description.grid(row=5, column=1, sticky="ew", padx=5, pady=5)
+        # Střední sloupec
+        center_col = QVBoxLayout()
+        center_col.addWidget(QLabel("IMEI"))
+        center_col.addWidget(QLineEdit())
+        center_col.addWidget(QLabel("Značka"))
 
-        # Popis opravy (Text)
-        ctk.CTkLabel(self.form_frame, text="Popis opravy:").grid(row=6, column=0, sticky="nw", padx=5, pady=5)
-        self.entry_repair_description = ctk.CTkTextbox(self.form_frame, height=80)
-        self.entry_repair_description.grid(row=6, column=1, sticky="ew", padx=5, pady=5)
+        self.brand_combo = QComboBox()
+        self.brand_combo.addItems(get_brands(self.products))
+        self.brand_combo.currentTextChanged.connect(self.update_models)
+        center_col.addWidget(self.brand_combo)
 
-        # Tlačítko generovat
-        self.button_generate = ctk.CTkButton(self, text="Generovat", command=self.handler.on_generate_click)
-        self.button_generate.grid(row=7, column=0, pady=20)
+        center_col.addWidget(QLabel("Modelová řada"))
+        center_col.addWidget(QComboBox())  # Může být později propojeno
+        center_col.addWidget(QLabel("Model"))
 
-        # Zajistit, že hlavní rámec i formulář se roztahují správně
-        self.rowconfigure(0, weight=1)
-        self.columnconfigure(0, weight=1)
+        self.model_combo = QComboBox()
+        center_col.addWidget(self.model_combo)
+        self.update_models(self.brand_combo.currentText())  # Inicializace
 
-    def get_form_data(self):
-        return {
-            "customer_name": self.entry_customer_name.get(),
-            "phone": self.entry_phone.get(),
-            "imei": self.entry_imei.get(),
-            "email": self.entry_email.get(),
-            "category": self.dropdown_category.get(),
-            "device_description": self.entry_device_description.get("1.0", "end").strip(),
-            "repair_description": self.entry_repair_description.get("1.0", "end").strip(),
-        }
+        center_col.addWidget(QLabel("Použité díly"))
+        center_col.addWidget(QTextEdit())
 
-    def reset_form(self):
-        self.entry_customer_name.delete(0, "end")
-        self.entry_phone.delete(0, "end")
-        self.entry_imei.delete(0, "end")
-        self.entry_email.delete(0, "end")
-        self.dropdown_category.set("Zakázky")
-        self.entry_device_description.delete("1.0", "end")
-        self.entry_repair_description.delete("1.0", "end")
+        # Pravý sloupec
+        right_col = QVBoxLayout()
+        right_col.addWidget(QLabel("Stav zařízení při převzetí"))
+        right_col.addWidget(QTextEdit())
+        right_col.addWidget(QLabel("Návrh opravy"))
+        right_col.addWidget(QTextEdit())
+        right_col.addWidget(QLabel("Příslušenství / doplňující info"))
+        right_col.addWidget(QTextEdit())
+
+        columns_layout.addLayout(left_col)
+        columns_layout.addLayout(center_col)
+        columns_layout.addLayout(right_col)
+
+        main_layout.addLayout(columns_layout)
+
+        footer = QHBoxLayout()
+        footer.addStretch()
+        footer.addWidget(QPushButton("Generovat PDF"))
+        footer.addWidget(QPushButton("AI návrh"))
+        footer.addWidget(QPushButton("Ověřit díly"))
+        footer.addStretch()
+        main_layout.addLayout(footer)
+
+    def update_models(self, selected_brand):
+        models = get_models_by_brand(self.products, selected_brand)
+        self.model_combo.clear()
+        self.model_combo.addItems(models)
