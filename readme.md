@@ -18,41 +18,53 @@ Aplikace slouží k zadávání údajů o zakázkách pro servis mobilních zař
 ### 🗂️ Struktura projektu
 
     Python321/
-    ├── app/                     # Hlavní aplikační balíček
-    │   ├── gui/                 # Vše, co se týká GUI (okna, widgety)
-    │   │   ├── widgets/         # Vlastní widgety
-    │   │   ├── app_gui.py       # Hlavní GUI aplikace
-    │   │   └── theme.py         # Styl, barvy
+    ├── app/                        # Hlavní aplikace
+    │   ├── core/                   # Jádro - generování PDF a stylování
+    │   │   ├── pdf_generator.py    # Třída PDFGenerator - generuje stylizované PDF
+    │   │   ├── base_theme.py       # Slovník `base_theme` - definice barev, fontů a rozměrů pro PDF
+    │   │   └── __init__.py
     │   │
-    │   ├── core/                # Logika aplikace (generování, výpočty, validace)
-    │   │   ├── pdf_generator.py
-    │   │   ├── validation.py
-    │   │   └── ...
+    │   ├── data/                   # Výstupy - vygenerovaná PDF
+    │   │   (po spuštění se zde objeví PDF)
     │   │
-    │   ├── data/                # Správa vstupních/konfiguračních souborů
-    │   │   ├── devices.json
-    │   │   ├── counters.txt
-    │   │   └── ...
+    │   ├── gui/                    # Grafické uživatelské rozhraní (PySide6)
+    │   │   ├── app_gui.py          # Třída ZakazkovyListApp - hlavní okno aplikace
+    │   │   ├── theme.py            # Funkce `apply_theme` - vzhled aplikace Qt
+    │   │   └── __init__.py
     │   │
-    │   ├── services/            # Práce s daty – načítání, ukládání, manipulace
-    │   │   ├── product_loader.py
-    │   │   ├── file_utils.py
-    │   │   └── order_manager.py
+    │   ├── handler/                # Obsluha logiky aplikace
+    │   │   ├── generate_handler.py # Třída GenerateHandler - propojuje GUI a PDFGenerator
+    │   │   └── __init__.py
     │   │
-    │   ├── main.py              # Vstupní bod aplikace (GUI launcher)
-    │   └── __init__.py          # (prázdný nebo s definovanými exporty)
+    │   ├── services/               # Pomocné služby (data, načítání produktů atd.)
+    │   │   ├── company_info.py     # Funkce `get_data` - vrací údaje o servisu
+    │   │   ├── product_loader.py   # Funkce pro načítání produktů/zařízení/modelů
+    │   │   └── __init__.py
+    │   │
+    │   ├── main.py                 # Spouštěcí skript aplikace
+    │   └── __init__.py
     │
-    ├── product/                 # Vzorky dat (např. json soubory zařízení)
-    │   └── apple.json
+    ├── resources/                  # Statické zdroje
+    │   ├── fonts/                  # Použité fonty pro PDF
+    │   │   └── DejaVuSans.ttf
+    │   │
+    │   ├── icons/                  # Ikony aplikace
+    │   │   └── ikonaW.ico
+    │   │
+    │   ├── images/                 # Obrázky (např. logo pro PDF a ukázky)
+    │   │   ├── logo.png
+    │   │   └── screenshot.png
     │
-    ├── resources/               # Obrázky, fonty, ikony
-    │   ├── fonts/
-    │   ├── icons/
-    │   └── images/
+    ├── tests/                      # Testovací skripty (připravit podle potřeby)
+    │   └── ...
     │
-    ├── setup.py                 # Volitelně spouštěč nebo CLI
-    ├── requirements.txt         # Seznam závislostí
-    └── README.md
+    ├── .venv/                      # Virtuální prostředí (není ve verzi na GitHubu)
+    │
+    ├── LICENSE                     # Licence projektu
+    ├── README.md                   # Dokumentace projektu
+    ├── requirements.txt            # Seznam Python balíčků
+    └── .gitignore                  # Ignorované soubory Git
+
 
 ---
 

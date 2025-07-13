@@ -1,0 +1,66 @@
+{
+  "device": "Samsung",
+  "brands": [
+    {
+      "model_series": "Galaxy S",
+      "models": [
+        {"model": "S1", "year": 2010, "price": 8000},
+        {"model": "S2", "year": 2011, "price": 9000},
+        {"model": "S3", "year": 2012, "price": 10000},
+        {"model": "S4", "year": 2013, "price": 11000},
+        {"model": "S5", "year": 2014, "price": 12000},
+        {"model": "S6", "year": 2015, "price": 13000},
+        {"model": "S7", "year": 2016, "price": 14000},
+        {"model": "S8", "year": 2017, "price": 15000},
+        {"model": "S9", "year": 2018, "price": 16000},
+        {"model": "S10", "year": 2019, "price": 17000},
+        {"model": "S20", "year": 2020, "price": 22000},
+        {"model": "S21", "year": 2021, "price": 24000},
+        {"model": "S22", "year": 2022, "price": 26000},
+        {"model": "S23", "year": 2023, "price": 28000}
+      ]
+    },
+    {
+      "model_series": "Galaxy Note",
+      "models": [
+        {"model": "Note 1", "year": 2011, "price": 11000},
+        {"model": "Note 2", "year": 2012, "price": 12000},
+        {"model": "Note 3", "year": 2013, "price": 13000},
+        {"model": "Note 4", "year": 2014, "price": 14000},
+        {"model": "Note 5", "year": 2015, "price": 15000},
+        {"model": "Note 7", "year": 2016, "price": 16000},
+        {"model": "Note 8", "year": 2017, "price": 17000},
+        {"model": "Note 9", "year": 2018, "price": 18000},
+        {"model": "Note 10", "year": 2019, "price": 19000},
+        {"model": "Note 20", "year": 2020, "price": 21000}
+      ]
+    },
+    {
+      "model_series": "Galaxy A",
+      "models": [
+        {"model": "A3", "year": 2015, "price": 5000},
+        {"model": "A5", "year": 2015, "price": 6000},
+        {"model": "A7", "year": 2016, "price": 7000},
+        {"model": "A8", "year": 2018, "price": 8000},
+        {"model": "A10", "year": 2019, "price": 9000},
+        {"model": "A20", "year": 2020, "price": 10000},
+        {"model": "A30", "year": 2020, "price": 11000},
+        {"model": "A50", "year": 2021, "price": 13000},
+        {"model": "A70", "year": 2021, "price": 15000},
+        {"model": "A80", "year": 2021, "price": 16000},
+        {"model": "A90", "year": 2022, "price": 17000}
+      ]
+    },
+    {
+      "model_series": "Galaxy Z",
+      "models": [
+        {"model": "Z Flip", "year": 2020, "price": 25000},
+        {"model": "Z Flip 3", "year": 2021, "price": 27000},
+        {"model": "Z Fold", "year": 2019, "price": 30000},
+        {"model": "Z Fold 2", "year": 2020, "price": 32000},
+        {"model": "Z Fold 3", "year": 2021, "price": 35000}
+      ]
+    }
+  ]
+}
+

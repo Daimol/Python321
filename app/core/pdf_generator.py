@@ -1,82 +1,137 @@
+import os
+from datetime import datetime
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 from reportlab.lib.utils import ImageReader
 from reportlab.lib import colors
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
-import os
-
-
-def draw_boxed_section(c, x, y, w, title, content):
-    """Pomocná metoda pro kreslení sekcí s nadpisem a textem."""
-    c.setFont("DejaVuSans", 11)
-    c.drawString(x, y, title)
-    c.setFont("DejaVuSans", 10)
-    c.rect(x, y - 60, w, 50)
-    text = c.beginText(x + 5, y - 15)
-    for line in content.split("\n"):
-        text.textLine(line)
-    c.drawText(text)
 
 
 class PDFGenerator:
-    def __init__(self, font_path="fonts/DejaVuSans.ttf", logo_path="resources/logo.png"):
+    def __init__(self, theme, font_path=None, logo_path=None):
+        PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+
+        if font_path is None:
+            font_path = os.path.join(PROJECT_ROOT, "resources", "fonts", "DejaVuSans.ttf")
+        if logo_path is None:
+            logo_path = os.path.join(PROJECT_ROOT, "resources", "images", "logo.png")
+
         self.font_path = font_path
         self.logo_path = logo_path
+        self.theme = theme
+
         self.register_fonts()
 
     def register_fonts(self):
-        pdfmetrics.registerFont(TTFont("DejaVuSans", self.font_path))
+        if not os.path.exists(self.font_path):
+            raise FileNotFoundError(f"Font file not found: {self.font_path}")
+        pdfmetrics.registerFont(TTFont(self.theme["font_name"], self.font_path))
+
+    def draw_boxed_section(self, c, x, y, w, h, title, content, padding=15):
+        # Barvy a velikosti z tématu
+        title_font_size = self.theme["section_title_font_size"]
+        title_color = colors.HexColor(self.theme["section_title_color"])
+        content_font_size = self.theme["section_content_font_size"]
+        content_color = colors.HexColor(self.theme["section_content_color"])
+        box_fill_color = colors.HexColor(self.theme["section_background_color"])
+        box_border_color = colors.HexColor(self.theme["section_border_color"])
+
+        # Pozadí rámečku s zaoblením
+        c.setFillColor(box_fill_color)
+        c.roundRect(x, y - h, w, h, radius=8, fill=1, stroke=0)
+
+        # Rámeček kolem boxu
+        c.setStrokeColor(box_border_color)
+        c.setLineWidth(1)
+        c.roundRect(x, y - h, w, h, radius=8, fill=0, stroke=1)
+
+        # Nadpis sekce (v horní části rámečku)
+        c.setFont(self.theme["font_name"], title_font_size)
+        c.setFillColor(title_color)
+        text_width = c.stringWidth(title, self.theme["font_name"], title_font_size)
+        title_x = x + (w / 2) - (text_width / 2)
+        c.drawString(title_x, y - 25, title)
+
+        # Text obsahu uvnitř rámečku (s odsazením)
+        lines = content.split("\n")
+        line_height = content_font_size + 2
+        text_start_y = y - 50  # trochu níž pod nadpisem
+
+        for i, line in enumerate(lines):
+            line_x = x + padding
+            line_y = text_start_y - i * line_height
+            c.setFont(self.theme["font_name"], content_font_size)
+            c.setFillColor(content_color)
+            c.drawString(line_x, line_y, line)
 
     def generate_pdf(self, path, order_number, customer_data, device_data, service_data, company_data):
         c = canvas.Canvas(path, pagesize=A4)
         width, height = A4
-        margin = 40
+        margin = 50
 
-        c.setFont("DejaVuSans", 10)
-
-        # Logo a název firmy
+        # Logo nahoře uprostřed
         if os.path.exists(self.logo_path):
             logo = ImageReader(self.logo_path)
-            c.drawImage(logo, margin, height - 80, width=100, preserveAspectRatio=True, mask='auto')
-        c.setFont("DejaVuSans", 16)
-        c.drawRightString(width - margin, height - 50, company_data.get("name", "Název firmy"))
+            c.drawImage(
+                logo,
+                (width - self.theme["logo_width"]) / 2,
+                height - margin - self.theme["logo_height"],
+                width=self.theme["logo_width"],
+                height=self.theme["logo_height"],
+                preserveAspectRatio=True,
+                mask='auto'
+            )
+            logo_height = self.theme["logo_height"]
+        else:
+            logo_height = 0
 
-        # Údaje o zákazníkovi
-        c.setFont("DejaVuSans", 10)
-        c.drawString(margin, height - 120, "Zákazník:")
-        y = height - 135
-        for label, value in customer_data.items():
-            c.drawString(margin + 10, y, f"{label}: {value}")
-            y -= 15
-
-        # Údaje o firmě
-        c.drawRightString(width - margin, height - 120, "Servis:")
-        y = height - 135
-        for label, value in company_data.items():
-            c.drawRightString(width - margin - 10, y, f"{label}: {value}")
-            y -= 15
-
-        # Číslo zakázky
-        c.setFont("DejaVuSans", 12)
-        c.setFillColor(colors.darkblue)
-        c.drawCentredString(width / 2, height - 200, f"Zakázkový list č. {order_number}")
+        # Titulek (zakázka)
+        c.setFont(self.theme["font_name"], self.theme["title_font_size"])
+        c.setFillColor(colors.HexColor(self.theme["title_color"]))
+        zakazka_y = height - margin - logo_height - 30
+        c.drawCentredString(width / 2, zakazka_y, f"Zakázka č. {order_number}")
         c.setFillColor(colors.black)
 
-        # Popis zařízení
-        draw_boxed_section(c, margin, height - 240, width - 2 * margin, "Popis zařízení", device_data.get("desc", ""))
+        # Rozdělení stránky na dvě poloviny pro zákazníka a servis
+        left_x = margin
+        right_x = width / 2 + 20
+        start_y = zakazka_y - 70
+        box_width = (width / 2) - margin - 30
+        box_height = 110
 
-        # Popis opravy
-        draw_boxed_section(c, margin, height - 340, width - 2 * margin, "Popis opravy", service_data.get("repair", ""))
+        # Zákazník
+        customer_text = "\n".join(f"{k}: {v}" for k, v in customer_data.items())
+        self.draw_boxed_section(c, left_x, start_y, box_width, box_height, "Zákazník", customer_text)
 
-        # Stav zařízení při převzetí
-        draw_boxed_section(c, margin, height - 440, width - 2 * margin, "Stav zařízení při převzetí", service_data.get("condition", ""))
+        # Servis (firma)
+        service_lines = [
+            f"Jméno: {company_data.get('Servis', '')}",
+            f"Adresa: {company_data.get('Adresa', '')}",
+            f"Telefon: {company_data.get('Telefon', '')}",
+            f"Email: {company_data.get('Email', '')}"
+        ]
+        service_text = "\n".join(service_lines)
+        self.draw_boxed_section(c, right_x, start_y, box_width, box_height, "Servis", service_text)
 
-        # Cena práce
-        c.setFont("DejaVuSans", 10)
-        c.drawString(margin, height - 500, f"Cena práce: {service_data.get('price', '0')} Kč")
+        # Popisy zařízení a služby níže, přes celou šířku
+        y_pos = start_y - box_height - 40
+        box_height_big = 90
 
-        # Datum
-        c.drawRightString(width - margin, height - 500, f"Datum: {service_data.get('date', '')}")
+        self.draw_boxed_section(c, margin, y_pos, width - 2 * margin, box_height_big, "Popis zařízení", device_data.get("desc", ""))
+        y_pos -= box_height_big + 30
+        self.draw_boxed_section(c, margin, y_pos, width - 2 * margin, box_height_big, "Popis opravy", service_data.get("repair", ""))
+        y_pos -= box_height_big + 30
+        self.draw_boxed_section(c, margin, y_pos, width - 2 * margin, box_height_big, "Stav zařízení při převzetí", service_data.get("condition", ""))
+
+        # Cena a datum dole
+        c.setFont(self.theme["font_name"], self.theme["price_font_size"])
+        c.setFillColor(colors.HexColor(self.theme["price_color"]))
+
+        price_text = f"{self.theme['price_label']}: {service_data.get('price', '0')} Kč"
+        c.drawString(margin, 60, price_text)
+
+        current_date = datetime.now().strftime("%d.%m.%Y %H:%M")
+        c.drawRightString(width - margin, 60, f"Datum: {current_date}")
 
         c.save()

@@ -1,0 +1,117 @@
+{
+  "device": "iPhone",
+  "brands": [
+    {
+      "model_series": "1",
+      "models": [
+        { "model": "iPhone", "year": 2007, "price": 499 }
+      ]
+    },
+    {
+      "model_series": "3G",
+      "models": [
+        { "model": "iPhone 3G", "year": 2008, "price": 599 },
+        { "model": "iPhone 3GS", "year": 2009, "price": 599 }
+      ]
+    },
+    {
+      "model_series": "4",
+      "models": [
+        { "model": "iPhone 4", "year": 2010, "price": 599 },
+        { "model": "iPhone 4S", "year": 2011, "price": 649 }
+      ]
+    },
+    {
+      "model_series": "5",
+      "models": [
+        { "model": "iPhone 5", "year": 2012, "price": 649 },
+        { "model": "iPhone 5C", "year": 2013, "price": 549 },
+        { "model": "iPhone 5S", "year": 2013, "price": 649 }
+      ]
+    },
+    {
+      "model_series": "6",
+      "models": [
+        { "model": "iPhone 6", "year": 2014, "price": 649 },
+        { "model": "iPhone 6 Plus", "year": 2014, "price": 749 },
+        { "model": "iPhone 6S", "year": 2015, "price": 649 },
+        { "model": "iPhone 6S Plus", "year": 2015, "price": 749 }
+      ]
+    },
+    {
+      "model_series": "SE",
+      "models": [
+        { "model": "iPhone SE", "year": 2016, "price": 399 },
+        { "model": "iPhone SE (2nd gen)", "year": 2020, "price": 399 },
+        { "model": "iPhone SE (3rd gen)", "year": 2022, "price": 429 }
+      ]
+    },
+    {
+      "model_series": "7",
+      "models": [
+        { "model": "iPhone 7", "year": 2016, "price": 649 },
+        { "model": "iPhone 7 Plus", "year": 2016, "price": 769 }
+      ]
+    },
+    {
+      "model_series": "8",
+      "models": [
+        { "model": "iPhone 8", "year": 2017, "price": 699 },
+        { "model": "iPhone 8 Plus", "year": 2017, "price": 799 }
+      ]
+    },
+    {
+      "model_series": "X",
+      "models": [
+        { "model": "iPhone X", "year": 2017, "price": 999 },
+        { "model": "iPhone XR", "year": 2018, "price": 749 },
+        { "model": "iPhone XS", "year": 2018, "price": 999 },
+        { "model": "iPhone XS Max", "year": 2018, "price": 1099 }
+      ]
+    },
+    {
+      "model_series": "11",
+      "models": [
+        { "model": "iPhone 11", "year": 2019, "price": 699 },
+        { "model": "iPhone 11 Pro", "year": 2019, "price": 999 },
+        { "model": "iPhone 11 Pro Max", "year": 2019, "price": 1099 }
+      ]
+    },
+    {
+      "model_series": "12",
+      "models": [
+        { "model": "iPhone 12", "year": 2020, "price": 799 },
+        { "model": "iPhone 12 Mini", "year": 2020, "price": 699 },
+        { "model": "iPhone 12 Pro", "year": 2020, "price": 999 },
+        { "model": "iPhone 12 Pro Max", "year": 2020, "price": 1099 }
+      ]
+    },
+    {
+      "model_series": "13",
+      "models": [
+        { "model": "iPhone 13", "year": 2021, "price": 799 },
+        { "model": "iPhone 13 Mini", "year": 2021, "price": 699 },
+        { "model": "iPhone 13 Pro", "year": 2021, "price": 999 },
+        { "model": "iPhone 13 Pro Max", "year": 2021, "price": 1099 }
+      ]
+    },
+    {
+      "model_series": "14",
+      "models": [
+        { "model": "iPhone 14", "year": 2022, "price": 799 },
+        { "model": "iPhone 14 Plus", "year": 2022, "price": 899 },
+        { "model": "iPhone 14 Pro", "year": 2022, "price": 999 },
+        { "model": "iPhone 14 Pro Max", "year": 2022, "price": 1099 }
+      ]
+    },
+    {
+      "model_series": "15",
+      "models": [
+        { "model": "iPhone 15", "year": 2023, "price": 799 },
+        { "model": "iPhone 15 Plus", "year": 2023, "price": 899 },
+        { "model": "iPhone 15 Pro", "year": 2023, "price": 999 },
+        { "model": "iPhone 15 Pro Max", "year": 2023, "price": 1199 }
+      ]
+    }
+  ]
+}
